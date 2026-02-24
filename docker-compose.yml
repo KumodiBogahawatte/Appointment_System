@@ -1,0 +1,82 @@
+# version: "3.8"
+
+# services:
+
+#   mongodb:
+#     image: mongo:6
+#     container_name: mongodb
+#     restart: always
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - mongo-data:/data/db
+
+#   user-service:
+#     build: ./user-service
+#     container_name: user-service
+#     restart: always
+#     ports:
+#       - "3001:3001"
+#     environment:
+#       - PORT=3001
+#       - JWT_SECRET=mysecret
+#       - MONGO_URI=mongodb://mongodb:27017/userservice
+#     depends_on:
+#       - mongodb
+
+#   appointment-service:
+#     build: ./appointment-service
+#     container_name: appointment-service
+#     restart: always
+#     ports:
+#       - "3002:3002"
+#     environment:
+#       - PORT=3002
+#       - MONGO_URI=mongodb://mongodb:27017/appointmentservice
+#     depends_on:
+#       - mongodb
+
+#   doctor-service:
+#     build: ./doctor-service
+#     container_name: doctor-service
+#     restart: always
+#     ports:
+#       - "3003:3003"
+#     environment:
+#       - PORT=3003
+#       - MONGO_URI=mongodb://mongodb:27017/doctorservice
+#     depends_on:
+#       - mongodb
+
+#   feedback-service:
+#     build: ./feedback-service
+#     container_name: feedback-service
+#     restart: always
+#     ports:
+#       - "3004:3004"
+#     environment:
+#       - PORT=3004
+#       - MONGO_URI=mongodb://mongodb:27017/feedbackservice
+#     depends_on:
+#       - mongodb
+
+#   api-gateway:
+#     build: ./api-gateway
+#     container_name: api-gateway
+#     restart: always
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       - PORT=3000
+#       - USER_SERVICE_URL=http://user-service:3001
+#       - APPOINTMENT_SERVICE_URL=http://appointment-service:3002
+#       - DOCTOR_SERVICE_URL=http://doctor-service:3003
+#       - FEEDBACK_SERVICE_URL=http://feedback-service:3004
+#     depends_on:
+#       - user-service
+#       - appointment-service
+#       - doctor-service
+#       - feedback-service
+
+# volumes:
+#   mongo-data:

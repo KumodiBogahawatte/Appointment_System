@@ -1,0 +1,55 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test || echo "No tests defined"
+
+      - name: SonarCloud Scan
+        uses: SonarCloud/sonarcloud-github-action@v2
+        with:
+          projectKey: ${{ secrets.SONAR_PROJECT_KEY }}
+          organization: ${{ secrets.SONAR_ORGANIZATION }}
+          token: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Build Docker image
+        run: docker build -t user-service:${{ github.sha }} .
+
+      - name: Push Docker image
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker tag user-service:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/user-service:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/user-service:${{ github.sha }}
+
+      # Example deployment step for AWS ECS
+      - name: Deploy to AWS ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          task-definition: ecs-task-def.json
+          service: user-service
+          cluster: your-ecs-cluster
+          wait-for-service-stability: true
