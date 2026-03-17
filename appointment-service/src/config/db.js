@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log('Appointment Service MongoDB Connected');
+    console.log('✓ Appointment Service MongoDB Connected Successfully');
   } catch (error) {
-    console.error('Database connection error:', error);
+    console.error('✗ Database connection error:', error.message);
     process.exit(1);
   }
 };

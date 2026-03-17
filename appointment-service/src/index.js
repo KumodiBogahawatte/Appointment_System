@@ -12,9 +12,10 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
-app.use('/appointments', appointmentRoutes);
+// Mount routes without /appointments prefix (API Gateway already adds it)
+app.use('/', appointmentRoutes);
 
 const PORT = process.env.PORT || 3003;
 app.listen(PORT, () => {
-  console.log(`Appointment Service running on port ${PORT}`);
+  console.log(`✓ Appointment Service running on port ${PORT}`);
 });
