@@ -6,17 +6,27 @@ const {
   getDoctorById,
   createDoctor,
   updateDoctor,
-  deleteDoctor
+  deleteDoctor,
+  getDoctorAvailability,
+  getDoctorAppointments,
+  getDoctorFeedback,
+  healthCheck
 } = require("../controllers/doctorController");
 
-router.get("/doctors", getDoctors);
+// Health check
+router.get("/health", healthCheck);
 
-router.get("/doctors/:id", getDoctorById);
+// Doctor CRUD (API Gateway prepends /doctors via pathRewrite)
+router.get("/", getDoctors);
+router.post("/", createDoctor);
 
-router.post("/doctors", createDoctor);
+router.get("/:id", getDoctorById);
+router.put("/:id", updateDoctor);
+router.delete("/:id", deleteDoctor);
 
-router.put("/doctors/:id", updateDoctor);
-
-router.delete("/doctors/:id", deleteDoctor);
+// Doctor additional endpoints
+router.get("/:id/availability", getDoctorAvailability);
+router.get("/:id/appointments", getDoctorAppointments);
+router.get("/:id/feedback", getDoctorFeedback);
 
 module.exports = router;

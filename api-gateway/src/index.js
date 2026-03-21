@@ -7,12 +7,20 @@ const app = express();
 
 // Enable CORS for frontend
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: '*',
   credentials: true
 }));
 
-// Only use express.json() for non-proxied routes (if any)
-// app.use(express.json());
+// Debug middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
+
+// Health check endpoint
+app.get("/", (req, res) => {
+  res.json({ message: "API Gateway is running" });
+});
 
 app.use("/", proxyRoutes);
 
