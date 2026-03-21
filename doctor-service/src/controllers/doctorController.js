@@ -23,7 +23,7 @@ exports.getDoctors = async (req, res) => {
       const enrichedDoctors = await Promise.all(doctors.map(async (doctor) => {
         try {
           const ratingRes = await axios.get(
-            `${FEEDBACK_SERVICE_URL}/feedback/doctor/${doctor._id}/average`,
+            `${FEEDBACK_SERVICE_URL}/doctor/${doctor._id}/average`,
             { timeout: 3000 }
           );
           return {
@@ -167,7 +167,7 @@ exports.getDoctorFeedback = async (req, res) => {
   try {
     try {
       const feedbackRes = await axios.get(
-        `${FEEDBACK_SERVICE_URL}/feedback/doctor/${req.params.id}`,
+        `${FEEDBACK_SERVICE_URL}/doctor/${req.params.id}`,
         { timeout: 5000 }
       );
       res.json(feedbackRes.data);

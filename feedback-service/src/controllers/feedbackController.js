@@ -14,7 +14,7 @@ exports.createFeedback = async (req, res) => {
 
     // Verify doctor exists
     try {
-      await axios.get(`${DOCTOR_SERVICE_URL}/doctors/${doctorId}`, { timeout: 5000 });
+      await axios.get(`${DOCTOR_SERVICE_URL}/${doctorId}`, { timeout: 5000 });
     } catch (err) {
       return res.status(400).json({ message: 'Doctor not found' });
     }

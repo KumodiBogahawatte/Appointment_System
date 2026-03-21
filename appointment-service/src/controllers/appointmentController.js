@@ -18,20 +18,20 @@ exports.createAppointment = async (req, res) => {
       return res.status(400).json({ message: 'Invalid userId or doctorId' });
     }
 
-    // Verify doctor exists
+    // Verify doctor exists (direct service URL — no /doctors prefix; gateway strips that)
     try {
-      console.log(`Verifying doctor at: ${doctorServiceUrl}/doctors/${doctorId}`);
-      const doctorRes = await axios.get(`${doctorServiceUrl}/doctors/${doctorId}`, { timeout: 5000 });
+      console.log(`Verifying doctor at: ${doctorServiceUrl}/${doctorId}`);
+      const doctorRes = await axios.get(`${doctorServiceUrl}/${doctorId}`, { timeout: 5000 });
       console.log('Doctor verified:', doctorRes.data);
     } catch (err) {
       console.error('Doctor verification failed:', err.message);
       return res.status(404).json({ message: 'Doctor not found', error: err.message });
     }
 
-    // Verify user exists
+    // Verify user exists (direct service URL — no /users prefix)
     try {
-      console.log(`Verifying user at: ${userServiceUrl}/users/${userId}`);
-      const userRes = await axios.get(`${userServiceUrl}/users/${userId}`, { timeout: 5000 });
+      console.log(`Verifying user at: ${userServiceUrl}/${userId}`);
+      const userRes = await axios.get(`${userServiceUrl}/${userId}`, { timeout: 5000 });
       console.log('User verified:', userRes.data);
     } catch (err) {
       console.error('User verification failed:', err.message);
@@ -112,7 +112,7 @@ exports.updateAppointment = async (req, res) => {
     if (status === 'completed' && feedbackServiceUrl) {
       try {
         await axios.post(
-          `${feedbackServiceUrl}/feedback/notify-appointment`,
+          `${feedbackServiceUrl}/notify-appointment`,
           {
             appointmentId: appointment._id,
             userId: appointment.user,
