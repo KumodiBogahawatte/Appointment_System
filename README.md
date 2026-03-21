@@ -1,4 +1,3 @@
-```markdown
 # 🏥 Microservice-Based Healthcare Appointment System
 
 A **microservice-based healthcare appointment platform** built with modern cloud-native practices. The system consists of four independent services:
@@ -158,5 +157,3 @@ VITE_API_URL=http://localhost:3000
 ## 📅 Last Updated
 
 March 2026
-```
-
