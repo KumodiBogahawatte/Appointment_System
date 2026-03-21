@@ -2,9 +2,8 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const Appointment = require('../models/appointmentModel');
 
-const doctorServiceUrl = process.env.DOCTOR_SERVICE_URL;
-const userServiceUrl = process.env.USER_SERVICE_URL;
-const feedbackServiceUrl = process.env.FEEDBACK_SERVICE_URL;
+/** All outbound calls to other microservices go through the API Gateway (same paths as the frontend). */
+const gatewayBase = (process.env.API_GATEWAY_URL || 'http://localhost:3000').replace(/\/$/, '');
 
 exports.createAppointment = async (req, res) => {
   try {
@@ -18,20 +17,22 @@ exports.createAppointment = async (req, res) => {
       return res.status(400).json({ message: 'Invalid userId or doctorId' });
     }
 
-    // Verify doctor exists (direct service URL — no /doctors prefix; gateway strips that)
+    // Verify doctor exists via API Gateway → doctor service
     try {
-      console.log(`Verifying doctor at: ${doctorServiceUrl}/${doctorId}`);
-      const doctorRes = await axios.get(`${doctorServiceUrl}/${doctorId}`, { timeout: 5000 });
+      const doctorUrl = `${gatewayBase}/doctors/${doctorId}`;
+      console.log(`Verifying doctor at: ${doctorUrl}`);
+      const doctorRes = await axios.get(doctorUrl, { timeout: 5000 });
       console.log('Doctor verified:', doctorRes.data);
     } catch (err) {
       console.error('Doctor verification failed:', err.message);
       return res.status(404).json({ message: 'Doctor not found', error: err.message });
     }
 
-    // Verify user exists (direct service URL — no /users prefix)
+    // Verify user exists via API Gateway → user service
     try {
-      console.log(`Verifying user at: ${userServiceUrl}/${userId}`);
-      const userRes = await axios.get(`${userServiceUrl}/${userId}`, { timeout: 5000 });
+      const userUrl = `${gatewayBase}/users/${userId}`;
+      console.log(`Verifying user at: ${userUrl}`);
+      const userRes = await axios.get(userUrl, { timeout: 5000 });
       console.log('User verified:', userRes.data);
     } catch (err) {
       console.error('User verification failed:', err.message);
@@ -108,11 +109,11 @@ exports.updateAppointment = async (req, res) => {
 
     if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
 
-    // If appointment completed, notify feedback service
-    if (status === 'completed' && feedbackServiceUrl) {
+    // If appointment completed, notify feedback service via API Gateway
+    if (status === 'completed') {
       try {
         await axios.post(
-          `${feedbackServiceUrl}/notify-appointment`,
+          `${gatewayBase}/feedback/notify-appointment`,
           {
             appointmentId: appointment._id,
             userId: appointment.user,

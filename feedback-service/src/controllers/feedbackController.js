@@ -1,7 +1,8 @@
 const Feedback = require('../models/feedbackModel');
 const axios = require('axios');
 
-const DOCTOR_SERVICE_URL = process.env.DOCTOR_SERVICE_URL || 'http://localhost:3002';
+/** Doctor verification goes through API Gateway → doctor service. */
+const gatewayBase = (process.env.API_GATEWAY_URL || 'http://localhost:3000').replace(/\/$/, '');
 
 exports.createFeedback = async (req, res) => {
   try {
@@ -14,7 +15,7 @@ exports.createFeedback = async (req, res) => {
 
     // Verify doctor exists
     try {
-      await axios.get(`${DOCTOR_SERVICE_URL}/${doctorId}`, { timeout: 5000 });
+      await axios.get(`${gatewayBase}/doctors/${doctorId}`, { timeout: 5000 });
     } catch (err) {
       return res.status(400).json({ message: 'Doctor not found' });
     }

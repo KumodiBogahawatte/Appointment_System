@@ -1,7 +1,8 @@
 const Doctor = require("../models/doctorModel");
 const axios = require("axios");
 
-const FEEDBACK_SERVICE_URL = process.env.FEEDBACK_SERVICE_URL || 'http://localhost:3004';
+/** Calls to feedback go through API Gateway (not direct to feedback service port). */
+const gatewayBase = (process.env.API_GATEWAY_URL || "http://localhost:3000").replace(/\/$/, "");
 
 exports.getDoctors = async (req, res) => {
   try {
@@ -23,7 +24,7 @@ exports.getDoctors = async (req, res) => {
       const enrichedDoctors = await Promise.all(doctors.map(async (doctor) => {
         try {
           const ratingRes = await axios.get(
-            `${FEEDBACK_SERVICE_URL}/doctor/${doctor._id}/average`,
+            `${gatewayBase}/feedback/doctor/${doctor._id}/average`,
             { timeout: 3000 }
           );
           return {
@@ -167,7 +168,7 @@ exports.getDoctorFeedback = async (req, res) => {
   try {
     try {
       const feedbackRes = await axios.get(
-        `${FEEDBACK_SERVICE_URL}/doctor/${req.params.id}`,
+        `${gatewayBase}/feedback/doctor/${req.params.id}`,
         { timeout: 5000 }
       );
       res.json(feedbackRes.data);
