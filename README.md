@@ -1,54 +1,73 @@
 ```markdown
-A **microservice-based** healthcare appointment platform: **users**, **doctors**, **appointments**, and **feedback**, each backed by its own **MongoDB** database. An **API Gateway** is the single HTTP entry for web clients and for **server-to-server** calls (via `API_GATEWAY_URL`).
+# 🏥 Microservice-Based Healthcare Appointment System
 
-**Stack:** Node.js, Express, Mongoose, React (Vite), Tailwind CSS, MongoDB Atlas or local MongoDB.
+A **microservice-based healthcare appointment platform** built with modern cloud-native practices. The system consists of four independent services:
 
----
+- **User Service**
+- **Doctor Service**
+- **Appointment Service**
+- **Feedback Service**
 
-## Contents
-
-- [Architecture](#architecture)
-- [Prerequisites](#prerequisites)
-- [Quick start](#quick-start)
-- [Ports and URLs](#ports-and-urls)
-- [Environment variables](#environment-variables)
-- [API testing (Postman)](#api-testing-postman)
-- [Project structure](#project-structure)
-- [Service integration](#service-integration)
-- [Authentication](#authentication)
-- [Docker](#docker)
-- [CI/CD](#cicd)
-- [Database overview](#database-overview)
-- [Troubleshooting](#troubleshooting)
-- [Documentation index](#documentation-index)
+Each service has its own **MongoDB database** (database-per-service pattern) and communicates via a centralized **API Gateway**.
 
 ---
 
-## Architecture
+## 🛠 Tech Stack
 
-Clients (Admin **5173**, User app **5174**) talk only to **API Gateway :3000**. The gateway proxies:
+**Backend**
+- Node.js
+- Express.js
+- Mongoose
 
-- `/users` → User Service **3001**
-- `/doctors` → Doctor Service **3002**
-- `/appointments` → Appointment Service **3003**
-- `/feedback` → Feedback Service **3004**
+**Frontend**
+- React (Vite)
+- Tailwind CSS
 
-**Appointment**, **Doctor**, and **Feedback** services call other APIs through **`http://localhost:3000`** (same paths as Postman/UI). **Start the gateway before** those flows.
+**Database**
+- MongoDB (Atlas or local)
+
+**DevOps**
+- Docker
+- GitHub Actions (CI/CD)
 
 ---
 
-## Prerequisites
+## 🏗 Architecture
 
-- **Node.js** 18+ and **npm**
-- **MongoDB** (Atlas recommended); one connection string per service (`MONGO_URI`)
-- **Git**
+All clients (Admin UI & User App) communicate through a **single entry point**:
+
+👉 **API Gateway (http://localhost:3000)**
+
+### Routing
+
+| Route | Service | Port |
+|------|--------|------|
+| `/users` | User Service | 3001 |
+| `/doctors` | Doctor Service | 3002 |
+| `/appointments` | Appointment Service | 3003 |
+| `/feedback` | Feedback Service | 3004 |
+
+✔️ All **internal service communication** also goes through the gateway using:
+
+http://localhost:3000
+
+⚠️ **Important:** Always start the API Gateway **before** other services.
 
 ---
-### 1. Install dependencies
 
-From the repository root:
+## 📋 Prerequisites
 
-```bash
+- Node.js (v18+)
+- npm
+- MongoDB (Atlas recommended)
+- Git
+
+---
+
+## 🚀 Quick Start
+
+### 1. Install Dependencies
+
 cd api-gateway && npm install && cd ..
 cd user-service && npm install && cd ..
 cd doctor-service && npm install && cd ..
@@ -56,199 +75,88 @@ cd appointment-service && npm install && cd ..
 cd feedback-service && npm install && cd ..
 cd admin && npm install && cd ..
 cd userFrontend/appointment && npm install && cd ../..
-```
 
-### 2. Environment files
+---
 
-- Copy **`.env.example`** → **`.env`** where available.
-- **Never commit** real `.env` (passwords, secrets).
+### 2. Setup Environment Variables
 
-### 3. Start everything
+- Copy `.env.example` → `.env`
+- Do NOT commit `.env` files
 
-| Method | Command |
-|--------|---------|
-| Windows | Double-click `start-all-services.bat` |
-| PowerShell | `.\start-all-services.ps1` |
-| Node | `node start-all-services.js` |
+---
 
-### 4. Manual start (gateway first)
+### 3. Start All Services
 
-```bash
+#### Option 1: Script
+
+- Windows: start-all-services.bat
+- PowerShell: .\start-all-services.ps1
+- Node:
+node start-all-services.js
+
+#### Option 2: Manual Start
+
 cd api-gateway && npm start
-# then in other terminals:
+
 cd user-service && npm start
 cd doctor-service && npm start
 cd appointment-service && npm start
 cd feedback-service && npm start
+
 cd admin && npm run dev
 cd userFrontend/appointment && npm run dev
-```
-
-More detail: **[QUICK_START.md](QUICK_START.md)**
 
 ---
 
-## Ports and URLs
+## 🌐 Ports and URLs
 
 | Component | Port | URL |
-|-----------|------|-----|
+|----------|------|-----|
 | API Gateway | 3000 | http://localhost:3000 |
-| User Service | 3001 | http://localhost:3001 (direct dev only) |
+| User Service | 3001 | http://localhost:3001 |
 | Doctor Service | 3002 | http://localhost:3002 |
 | Appointment Service | 3003 | http://localhost:3003 |
 | Feedback Service | 3004 | http://localhost:3004 |
-| Admin dashboard | 5173 | http://localhost:5173 |
-| User web app | 5174 | http://localhost:5174 |
-
-**Postman and React apps** should use the **gateway**: `http://localhost:3000`.
+| Admin Dashboard | 5173 | http://localhost:5173 |
+| User Web App | 5174 | http://localhost:5174 |
 
 ---
 
-## Environment variables
+## 🔐 Environment Variables
 
-### API Gateway (`api-gateway/.env`)
+API Gateway:
+PORT=3000
+USER_SERVICE_URL=http://localhost:3001
+DOCTOR_SERVICE_URL=http://localhost:3002
+APPOINTMENT_SERVICE_URL=http://localhost:3003
+FEEDBACK_SERVICE_URL=http://localhost:3004
 
-- `PORT` — default 3000  
-- `USER_SERVICE_URL` — e.g. `http://localhost:3001`  
-- `DOCTOR_SERVICE_URL` — `http://localhost:3002`  
-- `APPOINTMENT_SERVICE_URL` — `http://localhost:3003`  
-- `FEEDBACK_SERVICE_URL` — `http://localhost:3004`  
+User Service:
+PORT=3001
+MONGO_URI=your_mongo_uri
+JWT_SECRET=your_secret
 
-### User Service
+Other Services:
+PORT=300X
+MONGO_URI=your_mongo_uri
+API_GATEWAY_URL=http://localhost:3000
 
-- `PORT`, `MONGO_URI`, `JWT_SECRET`  
-
-### Doctor, Appointment, Feedback services
-
-- `PORT`, `MONGO_URI`  
-- **`API_GATEWAY_URL=http://localhost:3000`** — required for outbound calls to other services  
-
-### User frontend (`userFrontend/appointment/.env`)
-
-- `VITE_API_URL=http://localhost:3000`  
-
----
-
-## API testing (Postman)
-
-Full list of endpoints, methods, and JSON bodies:
-
-**[docs/POSTMAN_API_TESTS.md](docs/POSTMAN_API_TESTS.md)**
-
-Example health checks:
-
-```bash
-curl http://localhost:3000/
-curl http://localhost:3000/users/health
-curl http://localhost:3000/doctors/health
-curl http://localhost:3000/appointments/health
-curl http://localhost:3000/feedback/health
-```
+Frontend:
+VITE_API_URL=http://localhost:3000
 
 ---
 
-## Project structure
+## 🧪 Troubleshooting
 
-```
-appointment-system/
-├── api-gateway/           Reverse proxy
-├── user-service/          Auth, users, JWT
-├── doctor-service/        Doctors, availability, ratings via feedback
-├── appointment-service/   Bookings; validates user/doctor via gateway
-├── feedback-service/      Ratings; verifies doctor via gateway
-├── admin/                 Admin UI (Vite + React)
-├── userFrontend/appointment/   Patient UI (Vite + React)
-├── docs/                  Postman guide, SE4010 report
-├── docker-compose.yml
-├── start-all-services.bat | .ps1 | .js
-├── QUICK_START.md
-└── README.md
-```
+- Run npm install if modules missing
+- Ensure MongoDB is running
+- Start API Gateway first
+- Use valid ObjectIds
 
 ---
 
-## Service integration
+## 📅 Last Updated
 
-| Caller | Calls (via `API_GATEWAY_URL`) | Purpose |
-|--------|------------------------------|---------|
-| Appointment | `GET /users/:id`, `GET /doctors/:id` | Validate IDs before create |
-| Appointment | `POST /feedback/notify-appointment` | When status becomes `completed` |
-| Doctor | `GET /feedback/doctor/...` | Average rating and feedback list |
-| Feedback | `GET /doctors/:id` | Validate doctor on create feedback |
-
-User Service does **not** call other services in code; it is **called** by Appointment for validation.
-
----
-
-## Authentication
-
-The **user** app uses the **User Service**:
-
-- `POST /users/signup` — register  
-- `POST /users/login` — returns `token`, `role`, `id`  
-
-The frontend stores the JWT in **`localStorage`** (`userToken`). For production, add gateway-level JWT verification on protected routes.
-
----
-
-## Docker
-
-```bash
-docker compose build
-docker compose up
-```
-
-Each microservice has a **Dockerfile**. Adjust compose for how you run MongoDB.
-
----
-
-## CI/CD
-
-Example workflow: **`user-service/.github/workflows/ci-cd.yml`** (install, tests, SonarCloud, Docker build/push, optional ECS). Replicate for other services as needed.
-
----
-
-## Database overview
-
-| Service | Data |
-|---------|------|
-| User | Users collection (bcrypt passwords, roles) |
-| Doctor | Doctors (name, specialization, contact) |
-| Appointment | Appointments (user, doctor, date, status, notes) |
-| Feedback | Feedback (appointmentId, userId, doctorId, rating, comment, status) |
-
----
-
-## Troubleshooting
-
-| Problem | Try |
-|---------|-----|
-| `Cannot find module` | `npm install` in that service folder |
-| Mongo `querySrv` / connection errors | Use Atlas standard `mongodb://` URI; check DNS / Atlas IP allowlist |
-| 504 on `/appointments` | Start **gateway** first; check all services and MongoDB |
-| Booking returns 404 user/doctor | Use real **ObjectIds** from signup and create-doctor responses |
-
-**Windows — free a port:**
-
-```text
-netstat -ano | findstr :3000
-taskkill /PID <pid> /F
-```
-
----
-
-## Documentation index
-| Document | Description |
-|----------|-------------|
-| [QUICK_START.md](QUICK_START.md) | Step-by-step local run |
-| [docs/POSTMAN_API_TESTS.md](docs/POSTMAN_API_TESTS.md) | Postman URLs and JSON |
-| [docs/SE4010_Cloud_Computing_Project_Report.md](docs/SE4010_Cloud_Computing_Project_Report.md) | Full academic report |
-| [IMPLEMENTATION_COMPLETION_REPORT.md](IMPLEMENTATION_COMPLETION_REPORT.md) | Implementation notes (if present) |
-
----
-## License / team
-Educational project (e.g. SLIIT SE4010). Update team names and repository URL in your fork.
-
-**Last updated:** March 2026
+March 2026
 ```
 
