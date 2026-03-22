@@ -10,6 +10,9 @@ router.get("/health", userController.healthCheck);
 router.post("/signup", userController.signup);
 router.post("/login", userController.login);
 
+// List all users (must be before /:id)
+router.get("/", userController.getAllUsers);
+
 // Middleware to validate ObjectId
 const validateObjectId = (req, res, next) => {
 	if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
