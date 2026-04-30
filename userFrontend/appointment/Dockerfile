@@ -1,4 +1,5 @@
-FROM node:20
+# Build stage
+FROM node:20 AS builder
 
 WORKDIR /app
 
@@ -7,6 +8,27 @@ RUN npm install
 
 COPY . .
 
+# Accept build arguments for Vite environment variables
+ARG VITE_API_URL=http://localhost:3000
+
+# Set environment variables for the build
+ENV VITE_API_URL=$VITE_API_URL
+
+# Build the Vite app with environment variables
+RUN npm run build
+
+# Production stage - serve with a simple Node.js server
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install a simple HTTP server
+RUN npm install -g serve
+
+# Copy built app from builder
+COPY --from=builder /app/dist ./dist
+
 EXPOSE 5174
 
-CMD ["npm", "run", "dev", "--", "--host"]
+# Serve the built app
+CMD ["serve", "-s", "dist", "-l", "5174"]
