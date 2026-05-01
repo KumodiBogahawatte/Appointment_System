@@ -42,12 +42,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate authentication secrets
+        run: |
+          HAS_WIF_PROVIDER="${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER || secrets.WIF_PROVIDER }}"
+          HAS_WIF_SERVICE_ACCOUNT="${{ secrets.GCP_SERVICE_ACCOUNT || secrets.WIF_SERVICE_ACCOUNT }}"
+          HAS_GCP_CREDENTIALS="${{ secrets.GCP_CREDENTIALS }}"
+
+          if [ -n "$HAS_WIF_PROVIDER" ] && [ -n "$HAS_WIF_SERVICE_ACCOUNT" ]; then
+            echo "Using Workload Identity Federation authentication."
+            exit 0
+          fi
+
+          if [ -n "$HAS_GCP_CREDENTIALS" ]; then
+            echo "Using Service Account JSON authentication."
+            exit 0
+          fi
+
+          echo "Missing required GCP auth secrets. Configure one of the following:"
+          echo "1) WIF: GCP_WORKLOAD_IDENTITY_PROVIDER + GCP_SERVICE_ACCOUNT (or WIF_PROVIDER + WIF_SERVICE_ACCOUNT)"
+          echo "2) JSON key: GCP_CREDENTIALS"
+          exit 1
+
       # Authenticate to Google Cloud
-      - name: Authenticate to Google Cloud
+      - name: Authenticate to Google Cloud (WIF)
         uses: google-github-actions/auth@v2
+        if: ${{ (secrets.GCP_WORKLOAD_IDENTITY_PROVIDER != '' || secrets.WIF_PROVIDER != '') && (secrets.GCP_SERVICE_ACCOUNT != '' || secrets.WIF_SERVICE_ACCOUNT != '') }}
         with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER || secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT || secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Authenticate to Google Cloud (JSON key fallback)
+        uses: google-github-actions/auth@v2
+        if: ${{ !((secrets.GCP_WORKLOAD_IDENTITY_PROVIDER != '' || secrets.WIF_PROVIDER != '') && (secrets.GCP_SERVICE_ACCOUNT != '' || secrets.WIF_SERVICE_ACCOUNT != '')) && secrets.GCP_CREDENTIALS != '' }}
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
