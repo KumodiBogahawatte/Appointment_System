@@ -60,28 +60,36 @@ jobs:
 
           if [ "${{ matrix.service }}" == "user-service" ]; then
             ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_USER_SERVICE }},JWT_SECRET=${{ secrets.JWT_SECRET }}"
-            PORT=3001
 
           elif [ "${{ matrix.service }}" == "doctor-service" ]; then
             ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_DOCTOR_SERVICE }}"
-            PORT=3002
 
           elif [ "${{ matrix.service }}" == "appointment-service" ]; then
             ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_APPOINTMENT_SYSTEM }}"
-            PORT=3003
 
           elif [ "${{ matrix.service }}" == "feedback-service" ]; then
             ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_FEEDBACK_SERVICE }}"
-            PORT=3004
 
           elif [ "${{ matrix.service }}" == "api-gateway" ]; then
-            ENV_VARS="USER_SERVICE_URL=${{ secrets.USER_SERVICE_URL }},DOCTOR_SERVICE_URL=${{ secrets.DOCTOR_SERVICE_URL }},APPOINTMENT_SERVICE_URL=${{ secrets.APPOINTMENT_SERVICE_URL }},FEEDBACK_SERVICE_URL=${{ secrets.FEEDBACK_SERVICE_URL }}"
-            PORT=3000
+            # Use service URL secrets if available, otherwise use localhost (for local testing)
+            USER_SERVICE_URL="${{ secrets.USER_SERVICE_URL }}"
+            DOCTOR_SERVICE_URL="${{ secrets.DOCTOR_SERVICE_URL }}"
+            APPOINTMENT_SERVICE_URL="${{ secrets.APPOINTMENT_SERVICE_URL }}"
+            FEEDBACK_SERVICE_URL="${{ secrets.FEEDBACK_SERVICE_URL }}"
+            
+            # Build ENV_VARS with available URLs
+            ENV_VARS="USER_SERVICE_URL=${USER_SERVICE_URL:-http://user-service:3001}"
+            ENV_VARS="$ENV_VARS,DOCTOR_SERVICE_URL=${DOCTOR_SERVICE_URL:-http://doctor-service:3002}"
+            ENV_VARS="$ENV_VARS,APPOINTMENT_SERVICE_URL=${APPOINTMENT_SERVICE_URL:-http://appointment-service:3003}"
+            ENV_VARS="$ENV_VARS,FEEDBACK_SERVICE_URL=${FEEDBACK_SERVICE_URL:-http://feedback-service:3004}"
           fi
 
           gcloud run deploy ${{ matrix.service }} \
             --image $IMAGE:latest \
             --region ${{ env.REGION }} \
+            --project ${{ env.PROJECT_ID }} \
             --platform managed \
             --allow-unauthenticated \
-            --set-env-vars $ENV_VARS,PORT=$PORT
+            --set-env-vars $ENV_VARS \
+            --timeout 600 \
+            --quiet 2>&1 || { echo "Deployment failed"; exit 1; }
