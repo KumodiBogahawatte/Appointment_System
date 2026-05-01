@@ -31,4 +31,4 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 8080
 
 # Serve the built app - listen on PORT env var (Cloud Run sets PORT=8080)
-CMD ["serve", "-s", "dist", "-l", "${PORT:-8080}"]
+CMD ["sh", "-c", "serve -s dist -l ${PORT:-8080}"]
