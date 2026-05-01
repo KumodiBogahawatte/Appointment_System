@@ -86,13 +86,13 @@ jobs:
             ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_USER_SERVICE }},JWT_SECRET=${{ secrets.JWT_SECRET }}"
 
           elif [ "${{ matrix.service }}" == "doctor-service" ]; then
-            ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_DOCTOR_SERVICE }}"
+            ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_DOCTOR_SERVICE }},API_GATEWAY_URL=${{ secrets.VITE_API_GATEWAY_URL }}"
 
           elif [ "${{ matrix.service }}" == "appointment-service" ]; then
             ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_APPOINTMENT_SYSTEM }},API_GATEWAY_URL=${{ secrets.VITE_API_GATEWAY_URL }}"
 
           elif [ "${{ matrix.service }}" == "feedback-service" ]; then
-            ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_FEEDBACK_SERVICE }}"
+            ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_FEEDBACK_SERVICE }},API_GATEWAY_URL=${{ secrets.VITE_API_GATEWAY_URL }}"
 
           elif [ "${{ matrix.service }}" == "api-gateway" ]; then
             # Use service URL secrets if available, otherwise use localhost (for local testing)

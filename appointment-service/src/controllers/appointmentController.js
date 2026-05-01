@@ -57,7 +57,7 @@ exports.createAppointment = async (req, res) => {
 
 exports.getAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.find().sort({ date: -1 });
+    const appointments = await Appointment.find().populate('doctor').sort({ date: -1 });
     res.json(appointments);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -66,7 +66,7 @@ exports.getAppointments = async (req, res) => {
 
 exports.getAppointmentById = async (req, res) => {
   try {
-    const appointment = await Appointment.findById(req.params.id);
+    const appointment = await Appointment.findById(req.params.id).populate('doctor');
     if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
     res.json(appointment);
   } catch (error) {
@@ -78,7 +78,7 @@ exports.getAppointmentsByUser = async (req, res) => {
   try {
     const { userId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(userId)) return res.status(400).json({ message: 'Invalid user id' });
-    const appointments = await Appointment.find({ user: userId }).sort({ date: -1 });
+    const appointments = await Appointment.find({ user: userId }).populate('doctor').sort({ date: -1 });
     res.json(appointments);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -89,7 +89,7 @@ exports.getAppointmentsByDoctor = async (req, res) => {
   try {
     const { doctorId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(doctorId)) return res.status(400).json({ message: 'Invalid doctor id' });
-    const appointments = await Appointment.find({ doctor: doctorId }).sort({ date: -1 });
+    const appointments = await Appointment.find({ doctor: doctorId }).populate('doctor').sort({ date: -1 });
     res.json(appointments);
   } catch (error) {
     res.status(500).json({ message: error.message });
