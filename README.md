@@ -154,6 +154,64 @@ VITE_API_URL=http://localhost:3000
 
 ---
 
+## 🚀 Cloud Run Deployment with GitHub Secrets
+
+Deploy to Google Cloud Run with secure secret management:
+
+**Quick Start:**
+1. Follow [SETUP_SUMMARY.md](SETUP_SUMMARY.md) for overview
+2. Set up GCP: [GCP_CLOUD_RUN_DEPLOYMENT.md](GCP_CLOUD_RUN_DEPLOYMENT.md)
+3. Configure secrets: [GITHUB_SECRETS_SETUP.md](GITHUB_SECRETS_SETUP.md)
+4. Quick reference: [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
+5. Verification: [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md)
+
+**Key Points:**
+- ✅ No secrets in Git (all in GitHub Secrets)
+- ✅ Automatic deployment on every push to `main`
+- ✅ Workload Identity Federation (no credentials stored)
+- ✅ Build-time and runtime environment variables
+- ✅ Production-ready architecture
+
+**How It Works:**
+1. You push code to GitHub
+2. GitHub Actions builds Docker images
+3. Images are pushed to Google Container Registry
+4. Services deploy to Cloud Run with secrets injected
+5. Everything is live at public HTTPS URLs
+
+---
+
+## 📚 Documentation Files
+
+| File | Purpose |
+|------|---------|
+| [SETUP_SUMMARY.md](SETUP_SUMMARY.md) | Overview of what was configured |
+| [GCP_CLOUD_RUN_DEPLOYMENT.md](GCP_CLOUD_RUN_DEPLOYMENT.md) | Complete GCP setup guide |
+| [GITHUB_SECRETS_SETUP.md](GITHUB_SECRETS_SETUP.md) | GitHub Secrets configuration |
+| [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) | Step-by-step migration guide |
+| [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) | Pre-deployment verification |
+| [QUICK_REFERENCE.md](QUICK_REFERENCE.md) | Commands and templates |
+
+**Start here:** [SETUP_SUMMARY.md](SETUP_SUMMARY.md)
+
+---
+
+## � Cloud Run Deployment
+
+Deploy to Google Cloud Run with GitHub Secrets:
+
+1. **Setup GCP**: Follow [GCP_CLOUD_RUN_DEPLOYMENT.md](GCP_CLOUD_RUN_DEPLOYMENT.md)
+2. **Configure Secrets**: Follow [GITHUB_SECRETS_SETUP.md](GITHUB_SECRETS_SETUP.md)
+3. **Push to GitHub**: 
+   ```bash
+   git push origin main
+   ```
+4. **GitHub Actions** will automatically build, push to GCR, and deploy to Cloud Run
+
+All sensitive environment variables (MongoDB URIs, JWT secrets, Firebase keys) are stored securely in GitHub Secrets.
+
+---
+
 ## 📅 Last Updated
 
-March 2026
+April 2026

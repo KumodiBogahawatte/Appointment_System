@@ -49,7 +49,7 @@ services:
     environment:
       - PORT=3004
       # Replace this with your actual MongoDB Cloud URI
-      - MONGO_URI=${MONGO_URI_FEEDBACK:-mongodb+srv://feedback_db_user:feedback2026@feedbackservice.co8n85j.mongodb.net/?appName=FeedbackService}
+      - MONGO_URI=${MONGO_URI_FEEDBACK_SERVICE:-mongodb+srv://feedback_db_user:feedback2026@feedbackservice.co8n85j.mongodb.net/?appName=FeedbackService}
       - API_GATEWAY_URL=http://api-gateway:3000
 
   api-gateway:
