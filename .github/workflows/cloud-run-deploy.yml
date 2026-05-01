@@ -89,7 +89,7 @@ jobs:
             ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_DOCTOR_SERVICE }}"
 
           elif [ "${{ matrix.service }}" == "appointment-service" ]; then
-            ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_APPOINTMENT_SYSTEM }}"
+            ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_APPOINTMENT_SYSTEM }},API_GATEWAY_URL=${{ secrets.VITE_API_GATEWAY_URL }}"
 
           elif [ "${{ matrix.service }}" == "feedback-service" ]; then
             ENV_VARS="MONGO_URI=${{ secrets.MONGO_URI_FEEDBACK_SERVICE }}"
