@@ -75,12 +75,12 @@ Services are live at https://service-name-xxx.a.run.app
 
 **Backend Services (Node.js)**
 ```
-GitHub Secret: MONGO_URI_USER=mongodb+srv://...
+GitHub Secret: MONGO_URI_USER_SERVICE=mongodb+srv://...
          ↓
 Docker build (no secrets needed for backend)
          ↓
 Cloud Run deployment:
-  --set-env-vars "MONGO_URI=${{ secrets.MONGO_URI_USER }}"
+     --set-env-vars "MONGO_URI=${{ secrets.MONGO_URI_USER_SERVICE }}"
          ↓
 process.env.MONGO_URI = mongodb+srv://...
 ```
@@ -230,7 +230,7 @@ Total time: ~5-10 minutes per deployment
 ## ⚙️ Environment Variables Used
 
 ### Stored in GitHub Secrets
-- `MONGO_URI_USER`, `MONGO_URI_DOCTOR`, `MONGO_URI_APPOINTMENT`, `MONGO_URI_FEEDBACK`
+- `MONGO_URI_USER_SERVICE`, `MONGO_URI_DOCTOR_SERVICE`, `MONGO_URI_APPOINTMENT_SYSTEM`, `MONGO_URI_FEEDBACK_SERVICE`
 - `JWT_SECRET`
 - `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, etc.
 - `VITE_API_GATEWAY_URL`, `VITE_API_URL`

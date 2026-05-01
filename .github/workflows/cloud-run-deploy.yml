@@ -90,26 +90,26 @@ jobs:
           # Set environment variables based on service
           if [ "${{ matrix.service-name }}" == "user-service" ]; then
             ENVIRONMENT_VARS="PORT=3001,\
-            MONGO_URI=${{ secrets.MONGO_URI_USER }},\
+            MONGO_URI=${{ secrets.MONGO_URI_USER_SERVICE }},\
             JWT_SECRET=${{ secrets.JWT_SECRET }},\
             API_GATEWAY_URL=http://api-gateway:3000"
             MEMORY=512Mi
             CPU=1
           elif [ "${{ matrix.service-name }}" == "doctor-service" ]; then
             ENVIRONMENT_VARS="PORT=3002,\
-            MONGO_URI=${{ secrets.MONGO_URI_DOCTOR }},\
+            MONGO_URI=${{ secrets.MONGO_URI_DOCTOR_SERVICE }},\
             API_GATEWAY_URL=http://api-gateway:3000"
             MEMORY=512Mi
             CPU=1
           elif [ "${{ matrix.service-name }}" == "appointment-service" ]; then
             ENVIRONMENT_VARS="PORT=3003,\
-            MONGO_URI=${{ secrets.MONGO_URI_APPOINTMENT }},\
+            MONGO_URI=${{ secrets.MONGO_URI_APPOINTMENT_SYSTEM }},\
             API_GATEWAY_URL=http://api-gateway:3000"
             MEMORY=512Mi
             CPU=1
           elif [ "${{ matrix.service-name }}" == "feedback-service" ]; then
             ENVIRONMENT_VARS="PORT=3004,\
-            MONGO_URI=${{ secrets.MONGO_URI_FEEDBACK }},\
+            MONGO_URI=${{ secrets.MONGO_URI_FEEDBACK_SERVICE }},\
             API_GATEWAY_URL=http://api-gateway:3000"
             MEMORY=512Mi
             CPU=1

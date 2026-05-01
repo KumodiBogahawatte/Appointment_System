@@ -100,10 +100,10 @@ GCP_SERVICE_ACCOUNT: github-actions-sa@appointment-system.iam.gserviceaccount.co
 ### Database Secrets (MongoDB Atlas URIs)
 
 ```
-MONGO_URI_USER: mongodb+srv://user:password@cluster.mongodb.net/userservice_db?retryWrites=true&w=majority
-MONGO_URI_DOCTOR: mongodb+srv://doctor:password@cluster.mongodb.net/doctorservice_db?retryWrites=true&w=majority
-MONGO_URI_APPOINTMENT: mongodb+srv://appointment:password@cluster.mongodb.net/appointmentservice_db?retryWrites=true&w=majority
-MONGO_URI_FEEDBACK: mongodb+srv://feedback:password@cluster.mongodb.net/feedbackservice_db?retryWrites=true&w=majority
+MONGO_URI_USER_SERVICE: mongodb+srv://user:password@cluster.mongodb.net/userservice_db?retryWrites=true&w=majority
+MONGO_URI_DOCTOR_SERVICE: mongodb+srv://doctor:password@cluster.mongodb.net/doctorservice_db?retryWrites=true&w=majority
+MONGO_URI_APPOINTMENT_SYSTEM: mongodb+srv://appointment:password@cluster.mongodb.net/appointmentservice_db?retryWrites=true&w=majority
+MONGO_URI_FEEDBACK_SERVICE: mongodb+srv://feedback:password@cluster.mongodb.net/feedbackservice_db?retryWrites=true&w=majority
 ```
 
 ### Application Secrets
@@ -185,7 +185,7 @@ gcloud run services logs read user-service --region us-central1 --limit=50
 
 The workflow file [.github/workflows/cloud-run-deploy.yml](.github/workflows/cloud-run-deploy.yml) automatically:
 
-1. **Reads GitHub Secrets**: `${{ secrets.MONGO_URI_USER }}`, `${{ secrets.JWT_SECRET }}`, etc.
+1. **Reads GitHub Secrets**: `${{ secrets.MONGO_URI_USER_SERVICE }}`, `${{ secrets.JWT_SECRET }}`, etc.
 2. **Sets Environment Variables**: Passes them to the Docker container at runtime via Cloud Run's `--set-env-vars` flag
 3. **Your Code Accesses Them**: `process.env.MONGO_URI`, `process.env.JWT_SECRET`, etc. in Node.js
 

@@ -139,7 +139,7 @@ Accessible at public HTTPS URLs
 GitHub Secrets (Encrypted)
      ↓
      ├─ Backend Services
-     │  └─ Docker run with: --set-env-vars "MONGO_URI=${{ secrets.MONGO_URI_USER }}"
+     │  └─ Docker run with: --set-env-vars "MONGO_URI=${{ secrets.MONGO_URI_USER_SERVICE }}"
      │     └─ process.env.MONGO_URI in your code
      │
      └─ Frontend Services

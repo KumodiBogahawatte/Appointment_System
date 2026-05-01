@@ -49,10 +49,10 @@ gcloud iam service-accounts list --filter="displayName:GitHub Actions"
 
 | Secret Name | Format | Description |
 |---|---|---|
-| `MONGO_URI_USER` | `mongodb+srv://user:password@cluster.mongodb.net/userservice_db?retryWrites=true&w=majority` | User Service database |
-| `MONGO_URI_DOCTOR` | `mongodb+srv://doctor:password@cluster.mongodb.net/doctorservice_db?retryWrites=true&w=majority` | Doctor Service database |
-| `MONGO_URI_APPOINTMENT` | `mongodb+srv://appointment:password@cluster.mongodb.net/appointmentservice_db?retryWrites=true&w=majority` | Appointment Service database |
-| `MONGO_URI_FEEDBACK` | `mongodb+srv://feedback:password@cluster.mongodb.net/feedbackservice_db?retryWrites=true&w=majority` | Feedback Service database |
+| `MONGO_URI_USER_SERVICE` | `mongodb+srv://user:password@cluster.mongodb.net/userservice_db?retryWrites=true&w=majority` | User Service database |
+| `MONGO_URI_DOCTOR_SERVICE` | `mongodb+srv://doctor:password@cluster.mongodb.net/doctorservice_db?retryWrites=true&w=majority` | Doctor Service database |
+| `MONGO_URI_APPOINTMENT_SYSTEM` | `mongodb+srv://appointment:password@cluster.mongodb.net/appointmentservice_db?retryWrites=true&w=majority` | Appointment Service database |
+| `MONGO_URI_FEEDBACK_SERVICE` | `mongodb+srv://feedback:password@cluster.mongodb.net/feedbackservice_db?retryWrites=true&w=majority` | Feedback Service database |
 
 **Best Practice:** Create a separate MongoDB user for each service in MongoDB Atlas:
 1. Go to MongoDB Atlas → Your Cluster
@@ -116,13 +116,13 @@ The GitHub Actions workflow (`.github/workflows/cloud-run-deploy.yml`) uses thes
 ```yaml
 # Accessing a secret in the workflow
 env:
-  DATABASE_URL: ${{ secrets.MONGO_URI_USER }}
+  DATABASE_URL: ${{ secrets.MONGO_URI_USER_SERVICE }}
 
 # Using it in a step
 - name: Deploy to Cloud Run
   env:
     ENVIRONMENT_VARS: |
-      MONGO_URI=${{ secrets.MONGO_URI_USER }},\
+      MONGO_URI=${{ secrets.MONGO_URI_USER_SERVICE }},\
       JWT_SECRET=${{ secrets.JWT_SECRET }}
   run: |
     gcloud run deploy user-service \
@@ -136,7 +136,7 @@ Secrets are injected as environment variables at runtime. Your code accesses the
 ### Node.js Backend
 ```javascript
 // src/config/db.js
-const mongoUri = process.env.MONGO_URI;  // From GitHub Secret MONGO_URI_USER
+const mongoUri = process.env.MONGO_URI;  // From GitHub Secret MONGO_URI_USER_SERVICE
 await mongoose.connect(mongoUri);
 ```
 
@@ -164,7 +164,7 @@ To rotate a secret (e.g., after a security incident):
 
 ## Viewing Secret Usage in Logs
 
-GitHub Actions **never logs secrets**. Even if you print `${{ secrets.MONGO_URI_USER }}`, it will be masked as `***`.
+GitHub Actions **never logs secrets**. Even if you print `${{ secrets.MONGO_URI_USER_SERVICE }}`, it will be masked as `***`.
 
 To verify a secret was used correctly:
 1. Go to GitHub Actions → Your workflow run
@@ -209,7 +209,7 @@ To verify a secret was used correctly:
 
 ## Example: Adding a New Secret
 
-Let's add `MONGO_URI_USER`:
+Let's add `MONGO_URI_USER_SERVICE`:
 
 1. In MongoDB Atlas, create a new database user:
    - Username: `user-service-user`
@@ -224,7 +224,7 @@ Let's add `MONGO_URI_USER`:
 3. In GitHub:
    - Go to Settings → Secrets and variables → Actions
    - Click "New repository secret"
-   - Name: `MONGO_URI_USER`
+  - Name: `MONGO_URI_USER_SERVICE`
    - Value: Paste the connection string
    - Click "Add secret"
 

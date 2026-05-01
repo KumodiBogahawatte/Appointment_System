@@ -13,10 +13,10 @@ GCP_SERVICE_ACCOUNT = github-actions-sa@your-project-id.iam.gserviceaccount.com
 
 ### Database Secrets (From MongoDB Atlas)
 ```
-MONGO_URI_USER = mongodb+srv://user:password@cluster.mongodb.net/userservice_db
-MONGO_URI_DOCTOR = mongodb+srv://doctor:password@cluster.mongodb.net/doctorservice_db
-MONGO_URI_APPOINTMENT = mongodb+srv://appointment:password@cluster.mongodb.net/appointmentservice_db
-MONGO_URI_FEEDBACK = mongodb+srv://feedback:password@cluster.mongodb.net/feedbackservice_db
+MONGO_URI_USER_SERVICE = mongodb+srv://user:password@cluster.mongodb.net/userservice_db
+MONGO_URI_DOCTOR_SERVICE = mongodb+srv://doctor:password@cluster.mongodb.net/doctorservice_db
+MONGO_URI_APPOINTMENT_SYSTEM = mongodb+srv://appointment:password@cluster.mongodb.net/appointmentservice_db
+MONGO_URI_FEEDBACK_SERVICE = mongodb+srv://feedback:password@cluster.mongodb.net/feedbackservice_db
 ```
 
 ### Application Secrets

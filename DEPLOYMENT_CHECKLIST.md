@@ -48,10 +48,10 @@ Use this checklist to ensure you've completed all steps for GCP Cloud Run deploy
 ### Database Secrets (MongoDB Atlas)
 - [ ] Create separate MongoDB users for each service
 - [ ] Get connection strings for each service
-- [ ] Add `MONGO_URI_USER`
-- [ ] Add `MONGO_URI_DOCTOR`
-- [ ] Add `MONGO_URI_APPOINTMENT`
-- [ ] Add `MONGO_URI_FEEDBACK`
+- [ ] Add `MONGO_URI_USER_SERVICE`
+- [ ] Add `MONGO_URI_DOCTOR_SERVICE`
+- [ ] Add `MONGO_URI_APPOINTMENT_SYSTEM`
+- [ ] Add `MONGO_URI_FEEDBACK_SERVICE`
 
 ### Application Secrets
 - [ ] Generate secure JWT secret: `openssl rand -base64 32`

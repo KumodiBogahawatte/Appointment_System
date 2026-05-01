@@ -59,10 +59,10 @@ In your GitHub repository (**Settings → Secrets and variables → Actions**), 
 - `GCP_SERVICE_ACCOUNT`
 
 ### Database Credentials (MongoDB Atlas)
-- `MONGO_URI_USER`
-- `MONGO_URI_DOCTOR`
-- `MONGO_URI_APPOINTMENT`
-- `MONGO_URI_FEEDBACK`
+- `MONGO_URI_USER_SERVICE`
+- `MONGO_URI_DOCTOR_SERVICE`
+- `MONGO_URI_APPOINTMENT_SYSTEM`
+- `MONGO_URI_FEEDBACK_SERVICE`
 
 ### Application Secrets
 - `JWT_SECRET`
@@ -215,7 +215,7 @@ environment:
 # .github/workflows/cloud-run-deploy.yml
 - name: Deploy to Cloud Run
   env:
-    MONGO_URI: ${{ secrets.MONGO_URI_USER }}
+    MONGO_URI: ${{ secrets.MONGO_URI_USER_SERVICE }}
     JWT_SECRET: ${{ secrets.JWT_SECRET }}
 ```
 
