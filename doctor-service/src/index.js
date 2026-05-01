@@ -16,6 +16,7 @@ app.use(express.json());
 
 app.use("/", doctorRoutes);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Doctor Service running on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Doctor Service running on port ${PORT}`);
 });

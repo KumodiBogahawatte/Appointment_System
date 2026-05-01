@@ -16,6 +16,7 @@ app.use(express.json());
 // Mount routes without /users prefix (API Gateway already adds it)
 app.use("/", userRoutes);
 
-app.listen(process.env.PORT, () => {
-  console.log(`User Service running on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`User Service running on port ${PORT}`);
 });

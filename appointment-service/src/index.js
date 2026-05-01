@@ -15,7 +15,7 @@ app.use(express.json());
 // Mount routes without /appointments prefix (API Gateway already adds it)
 app.use('/', appointmentRoutes);
 
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`✓ Appointment Service running on port ${PORT}`);
 });

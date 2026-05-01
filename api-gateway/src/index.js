@@ -24,6 +24,7 @@ app.get("/", (req, res) => {
 
 app.use("/", proxyRoutes);
 
-app.listen(process.env.PORT, () => {
-  console.log(`API Gateway running on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`API Gateway running on port ${PORT}`);
 });
