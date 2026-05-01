@@ -40,7 +40,7 @@ RUN npm install -g serve
 # Copy built app from builder
 COPY --from=builder /app/dist ./dist
 
-EXPOSE 5173
+EXPOSE 8080
 
-# Serve the built app
-CMD ["serve", "-s", "dist", "-l", "5173"]
+# Serve the built app - listen on PORT env var (Cloud Run sets PORT=8080)
+CMD ["serve", "-s", "dist", "-l", "${PORT:-8080}"]
