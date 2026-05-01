@@ -93,3 +93,4 @@ jobs:
             --set-env-vars $ENV_VARS \
             --timeout 600 \
             --quiet 2>&1 || { echo "Deployment failed"; exit 1; }
+            
